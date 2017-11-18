@@ -7,42 +7,17 @@ class Renderer {
     this.browser = browser;
   }
 
-  async createPage(url) {
+  async createPage(url, width, height) {
     const page = await this.browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
+    page.setViewport({ width, height })
     return page;
   }
 
-  async render(url) {
+  async screenshot(url, width, height) {
     let page = null;
     try {
-      page = await this.createPage(url);
-      const html = await page.content();
-      return html;
-    } finally {
-      if (page) {
-        await page.close();
-      }
-    }
-  }
-
-  async pdf(url) {
-    let page = null;
-    try {
-      page = await this.createPage(url);
-      const buffer = await page.pdf({ format: 'A4' });
-      return buffer;
-    } finally {
-      if (page) {
-        await page.close();
-      }
-    }
-  }
-
-  async screenshot(url) {
-    let page = null;
-    try {
-      page = await this.createPage(url);
+      page = await this.createPage(url, width, height);
       const buffer = await page.screenshot({ fullPage: true });
       return buffer;
     } finally {
